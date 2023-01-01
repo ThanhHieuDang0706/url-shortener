@@ -8,13 +8,15 @@ const app = express();
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 
-mongoose.connect(process.env.MONGO_URL || "mongodb://localhost:3000/shortUrl", {
+mongoose.connect(process.env.MONGO_URL || "", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
-app.get("/", (req, res) => {
-  res.render("index");
+app.get("/", async (req, res) => {
+  const shortUrls = await ShortUrl.find();
+
+  res.render("index", { urls: shortUrls });
 });
 
 app.post("/short-url", async (req, res) => {
@@ -22,6 +24,20 @@ app.post("/short-url", async (req, res) => {
     full: req.body.fullUrl,
   });
   res.redirect("/");
+});
+
+app.get("/:shortUrl", async (req, res) => {
+  const url = await ShortUrl.findOne({
+    short: req.params.shortUrl,
+  });
+
+  if (url) {
+    url.clicks++;
+    url.save();
+    res.redirect(url.full);
+  } else {
+    res.redirect("/");
+  }
 });
 
 app.listen(process.env.PORT || 3000, () => {

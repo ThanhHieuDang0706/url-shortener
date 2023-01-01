@@ -37,20 +37,20 @@
           <th>Clicks</th>
         </thead>
         <tbody>
+          <% urls.forEach(url => { %>
           <tr>
             <td>
-              <a
-                href="https://www.freecodecamp.org/news/basic-html5-template-boilerplate-code-example/"
-                >https://www.freecodecamp.org/news/basic-html5-template-boilerplate-code-example/</a
-              >
+              <a href="<%= url.full %>"><%= url.full %></a>
             </td>
 
             <td>
-              <a href="/123456">123456</a>
+              <a href="<%= url.short %>"><%= url.short %></a>
             </td>
 
-            <td>10</td>
+            <td><%= url.clicks %></td>
           </tr>
+
+          <% }) %>
         </tbody>
       </table>
     </div>
